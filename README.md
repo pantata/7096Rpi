@@ -22,5 +22,5 @@ Warning: the EEPROM of the 7096 processor may be corrupted after about 10 years 
 License: The MIT License (MIT)
 
 Credits:
-https://milligram.io
-https://github.com/johanymerson/7096
+- https://milligram.io 
+- https://github.com/johanymerson/7096 
