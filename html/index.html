@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="html/milligram.min.css">
+    <title>Tunze 7096</title>
+    <style>
+        .Interval{
+             background-color:rgb(240, 238, 131);
+        }
+        .Pulse{
+             background-color:rgb(168, 243, 168);
+        }
+        .Sequencial{
+             background-color:rgba(161, 194, 243, 0.692);
+        }
+        .bold{
+             font-weight: bold;
+             color: black;
+        }        
+    </style>
+  </head>
+  <body onload="getLang()">
+    <div class="container">
+        <h1>Tunze 7096</h1>
+    </div>
+    
+    <div class="container">
+        <hr>
+        <div data-l10n="Settings_table">Settings table</div>
+        <div style="font-size: smaller;" id="version">(Disconnected)</div>
+        <div class="row">
+            <div class="column">
+                <table id="nameAndTimeTable">
+                    <thead>
+                    <tr>
+                        <th data-l10n="Name">Name</th>
+                        <th data-l10n="Time_from">Time From</th>
+                        <th data-l10n="Time_to">Time To</th>
+                        <th data-l10n="Type">Type</th>
+                        <th data-l10n="Action">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr>
+
+        <div data-l10n="Global">Global</div>
+        <div class="row">
+            <div class="column">
+                <label data-l10n="Ramp" for="Ramp">Ramp time</label>
+                <input type="number" id="ramp" name="ramp" step="1" min="0"  max="1" value="0">
+            </div>
+            <div class="column">
+                <label data-l10n="Food_delay" for="fooddelay">Food delay</label>
+                <input type="number" step="1" min="0"  max="20" id="fooddelay" name="fooddelay" value="10">
+            </div>
+            <div class="column">
+                <label data-l10n="Food_times" for="food">Food times</label>
+                <input type="text" id="food" name="food" value="10:00;17:00">
+            </div>
+            <div class="column">
+                <label data-l10n="Storm_timer" for="Storm">Storm timer</label>
+                <input type="number" id="storm" name="storm" step="1" min="0"  max="72" value="12">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="column column-20">
+                <button data-l10n="Save" class="button-primary" id="submit">Save</button>
+            </div>
+            <div class="column column-20">
+                <div style="margin-top:0.8em;" id="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <hr>
+        <div data-l10n="Create_settings">Create named settings</div>
+        <div class="row">
+            <div class="column">
+                <label data-l10n="Name" for="modeName">Name</label>
+                <input type="text" id="modeName" name="modeName" maxlength="8">
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <fieldset id="modes">
+                    <div data-l10n="Mode">Mode</div>
+                    <label for="pulse">
+                        <input type="radio" id="pulse" name="modes" value="0" checked>
+                        <span data-l10n="Pulse">Pulse</span>
+                    </label>
+                    <label for="interval">
+                        <input type="radio" id="interval" name="modes" value="1">
+                        <span data-l10n="Interval">Interval</span>
+                    </label>
+                    <label for="sequential">
+                        <input type="radio" id="sequential" name="modes" value="2">
+                        <span data-l10n="Sequential">Sequential</span>
+                    </label>    
+                </fieldset>
+            </div>
+            <div class="column">
+                <fieldset id="pulseType">
+                    <div data-l10n="Pulse_type">Pulse type</div>
+                    <input type="checkbox" id="pulseRandom" name="pulseRandom">
+                    <label data-l10n="Random" class="label-inline" for="pulseRandom">Random</label>
+                </fieldset>
+            </div>
+            <div class="column">
+                <fieldset id="intTime">
+                    <div data-l10n="Interval_time">Interval Time</div>
+                    <label for="intTime">
+                        <span data-l10n="Minutes">Minutes</span>
+                        <input type="number" id="intMinutes" name="intMinutes" value="0">
+                    </label>
+                    <label for="intTime">
+                        <span data-l10n="Hour">Hour</span>
+                        <input type="number" id="intHour" name="intHour" value="0">
+                    </label>
+                </fieldset>
+            </div>
+            <div class="column">
+                <fieldset id="seq">
+                    <div data-l10n="Sequential">Sequential</div>
+                    <label for="seqsec">
+                        <span data-l10n="Seconds">Seconds</span>
+                        <input type="number" id="seqsec" name="seqsec" value="0">
+                    </label>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="column column-20 ">
+                <label data-l10n="From_time" for="timeWFrom">From time:</label>
+                <input type="text" id="timeWFrom" name="timeWFrom">
+            </div>
+            <div class="column column-20">
+                <label data-l10n="To_time" for="timeWTo">To time:</label>
+                <input type="text" id="timeWTo" name="timeWTo">
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="column">
+                <fieldset style="border-top:1px solid lightgrey; padding-top:1em;">
+                    <legend data-l10n="OUT12">&nbsp;1&2&nbsp;</legend>
+                    <div class="row">
+                        <div class="column">
+                            <label data-l10n="P1Max" for="power1">P1 Max %</label>
+                            <input type="number" min="0"  max="100" id="pMax1" name="pMax1" placeholder="%" value="0">
+                        </div>
+                        <div class="column">
+                            <label data-l10n="P2Max" for="power2">P2 Max%</label>
+                            <input type="number" min="0"  max="100" id="pMax2" name="pMax2" placeholder="%" value="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column">
+                            <label data-l10n="P1Min" for="power1">P1 Min%</label>
+                            <input type="number" min="0"  max="100" id="pMin1" name="pMin1" placeholder="%" value="0">
+                        </div>
+                        <div class="column">
+                            <label data-l10n="P2Min" for="power2">P2 Min%</label>
+                            <input type="number" min="0"  max="100" id="pMin2" name="pMin2" placeholder="%" value="0">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="column">
+                <fieldset style="border-top:1px solid lightgrey; padding-top:1em;">
+                    <legend data-l10n="OUT34">&nbsp;3&4&nbsp;</legend>
+                    <div class="row">
+                        <div class="column">
+                            <label data-l10n="P3Max" for="power3">P3 Max%</label>        
+                                <input type="number" min="0"  max="100" id="pMax3" name="pMax3" placeholder="%" value="0">
+                        </div>
+                        <div class="column">
+                            <label data-l10n="P4Max" for="power3">P4 Max%</label>
+                                <input type="number" min="0"  max="100" id="pMax4" name="pMax5" placeholder="%" value="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column">
+                            <label data-l10n="P3Min" for="power3">P3 Min%</label>  
+                                <input type="number" min="0"  max="100" id="pMin3" name="pMin3" placeholder="%" value="0">
+                        </div>
+                        <div class="column">
+                            <label data-l10n="P4Min" for="power4">P4 Min%</label>
+                                <input type="number" min="0"  max="100" id="pMin4" name="pMin4" placeholder="%" value="0">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="column column-20">
+                <label data-l10n="Pulse_flow"  for="pulseSec">Pulse flow</label>
+                <input type="number" step=".01" min="0" id="pulseSec" name="pulseSec" value="0">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="column">
+                    <button data-l10n="Add" class="button-primary" id="saveRow">Add</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function getLang() {
+            var xhr = new XMLHttpRequest();
+            var language = (navigator.language || navigator.userLanguage).split('-')[0]; 
+            if (!(['en', 'cs'].includes(language) )) {
+                language = 'en';
+            }
+            var url = "html/i18_" + language + ".js?"+Math.random()*10000;
+            xhr.open("GET", url, false);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    localize(data,language);
+                }
+            };
+            xhr.send();
+        }
+
+        function localize(data,l) {
+            nodes = document.querySelectorAll('[data-l10n]'),
+            i = nodes.length;
+            while (i--) {
+                var key = nodes[i].getAttribute('data-l10n');
+                nodes[i].innerHTML = data[l][key];
+            }
+        }
+
+        function dataToString() {
+            var mode = 0;
+            var intMinutes = 0;
+            var intHour = 0;
+            var seqSec = 0;
+            var pMin = [0,0,0,0];
+            var pMax = [0,0,0,0];
+            var pulse = 0;
+            var pulseRand = 0;
+
+            var radios = document.getElementsByName('modes');
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    mode = parseInt(radios[i].value);
+                    break;
+                }
+            }
+            var pulseRand = document.getElementById('pulseRandom').checked?1:0;
+            pMin = []
+            intMinutes = document.getElementById('intMinutes').value?document.getElementById('intMinutes').value:0;
+            intHour  = document.getElementById('intHour').value?document.getElementById('intHour').value:0;
+            seqSec  = document.getElementById('seqsec').value?document.getElementById('seqsec').value:0;
+            pMin = [document.getElementById('pMin1').value, document.getElementById('pMin2').value, document.getElementById('pMin3').value,document.getElementById('pMin4').value];
+            pMax = [document.getElementById('pMax1').value, document.getElementById('pMax2').value, document.getElementById('pMax3').value,document.getElementById('pMax4').value];
+            pulse = document.getElementById('pulseSec').value?document.getElementById('pulseSec').value:0;
+            var intMin = parseInt(intMinutes)+parseInt(intHour)*60;
+            var strData=mode +";"+ intMin + ";" + seqSec + ";" +pMin.join(";") +";"+  pMax.join(";") + ";" + parseFloat(pulse) * 100 +";"+ pulseRand;
+            return strData;
+        }
+
+        function delRow(row) {
+            var i = row.parentNode.parentNode.rowIndex;
+            document.getElementById('nameAndTimeTable').deleteRow(i);
+        }
+
+        function simulateClick(elId) {
+            var evt;
+            var el = elId;
+            if (document.createEvent) {
+                evt = document.createEvent("MouseEvents");
+                evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            }
+            (evt) ? el.dispatchEvent(evt) : (el.click && el.click());
+        }
+
+        function editRow(i) {
+            var row = i.parentNode.parentNode;
+            var strData = row.getAttribute('data');
+            var arrData = strData.split(";");
+            document.getElementById('modeName').value = row.cells[0].innerText;
+            if (arrData[0] ==  "0") {
+                radiobtn = document.getElementById("pulse");
+            } else if (arrData[0] ==  "1") {
+                radiobtn = document.getElementById("interval");
+            } else {
+                radiobtn = document.getElementById("sequential");
+            }
+            radiobtn.checked = true;
+            simulateClick(radiobtn);
+            document.getElementById('intMinutes').value = arrData[1] % 60;
+            document.getElementById('intHour').value = Math.floor(arrData[1]/60);
+            document.getElementById('seqsec').value = arrData[2];
+
+            document.getElementById('pMin1').value = arrData[3];
+            document.getElementById('pMin2').value = arrData[4];
+            document.getElementById('pMin3').value = arrData[5];
+            document.getElementById('pMin4').value = arrData[6];
+            
+            document.getElementById('pMax1').value = arrData[7];
+            document.getElementById('pMax2').value = arrData[8];
+            document.getElementById('pMax3').value = arrData[9];
+            document.getElementById('pMax4').value = arrData[10];
+
+            document.getElementById('pulseSec').value = arrData[11]/100;
+
+            document.getElementById('timeWFrom').value = row.cells[1].innerText;
+
+            document.getElementById('timeWFrom').value = row.cells[1].innerText;
+            document.getElementById('timeWTo').value = row.cells[2].innerText;
+            document.getElementById('pulseRandom').checked = arrData[12]=="1"?true:false;
+            document.getElementById('pulseSec').disabled = arrData[12]=="1"?true:false;
+        }
+
+        function createElementFromHTML(htmlString) {
+            var div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+            return div.firstChild; 
+        }
+
+        function replaceBadInputs(val) {
+            val = val.replace(/[^\dh:]/, "");
+            val = val.replace(/^[^0-2]/, "");
+            val = val.replace(/^([2-9])[4-9]/, "$1");
+            val = val.replace(/^\d[:h]/, "");
+            val = val.replace(/^([01][0-9])[^:h]/, "$1");
+            val = val.replace(/^(2[0-3])[^:h]/, "$1");      
+            val = val.replace(/^(\d{2}[:h])[^0-5]/, "$1");
+            val = val.replace(/^(\d{2}h)./, "$1");      
+            val = val.replace(/^(\d{2}:[0-5])[^0-9]/, "$1");
+            val = val.replace(/^(\d{2}:\d[0-9])./, "$1");
+            return val;
+        }
+
+        function replaceBadInputs24(val) {
+            val = val.replace(/[^\dh:]/, "");
+            val = val.replace(/^[^0-2]/, "");
+            val = val.replace(/^([2-9])[4-9]/, "$1");
+            val = val.replace(/^\d[:h]/, "");
+            val = val.replace(/^([01][0-9])[^:h]/, "$1");
+            val = val.replace(/^(2[0-4])[^:h]/, "$1");      
+            val = val.replace(/^(\d{2}[:h])[^0-5]/, "$1");
+            val = val.replace(/^(\d{2}h)./, "$1");      
+            val = val.replace(/^(\d{2}:[0-5])[^0-9]/, "$1");
+            val = val.replace(/^(\d{2}:\d[0-9])./, "$1");
+            return val;
+        }
+
+
+        function sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("nameAndTimeTable");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[1].innerText;
+                    y = rows[i + 1].getElementsByTagName("TD")[1].innerText;
+                    if (x > y) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+            //colorize
+            var newDate = new Date();
+            curMinutes = newDate.getHours()*60+newDate.getMinutes(); 
+
+            rows = table.rows;
+            for (i = 1; i < (rows.length); i++) {
+                x = rows[i].getElementsByTagName("TD")[3].innerText;
+                rows[i].className = x;
+                //if curent time in row, bold
+                var timeFrom = rows[i].getElementsByTagName("TD")[1].innerText.split(':');
+                var minFrom  = parseInt(timeFrom[0]) * 60 + parseInt(timeFrom[1]);
+                var timeTo = rows[i].getElementsByTagName("TD")[2].innerText.split(':');
+                var minTo  = parseInt(timeTo[0]) * 60 + parseInt(timeTo[1]);
+                if ((curMinutes > minFrom ) && (curMinutes <= minTo )) {
+                    rows[i].className = rows[i].className + " bold";
+                }
+            }
+        }
+
+        function get7096version() {
+            var xhr = new XMLHttpRequest();
+            var url = "version";
+            xhr.open("GET", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    document.getElementById('version').innerText = json['version'];
+                }
+            };
+            xhr.send();
+        }
+
+        function getDataFromServer() {
+            var xhr = new XMLHttpRequest();
+            var url = "getData";
+            xhr.open("GET", url, false);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    processData(json);
+                }
+            };
+            xhr.send();
+        }
+
+        function processData(json) {
+            var tTbl = document.getElementById('nameAndTimeTable');
+            var tbodyRef = tTbl.getElementsByTagName('tbody')[0];
+
+            for(var k in json) {
+                if (k == "f") { 
+                    document.getElementById('fooddelay').value = json[k];
+                }
+                else if (k == "ft") {
+                    document.getElementById('food').value = json[k];
+                }
+                else if (k == "s") {
+                    document.getElementById('storm').value = json[k];
+                }
+                else if (k == "r") {
+                    document.getElementById('ramp').value = json[k];
+                }                
+                else {
+                    jsonArr = json[k];
+                    for(i=0;i<jsonArr.length;i++) {
+                        dataArr = jsonArr[i].split(";");
+                        // Insert a row at the end of table
+                        var newRow = tbodyRef.insertRow();
+                        // Insert a cell at the end of the row
+                        var nameCell = newRow.insertCell();
+                        var newName = document.createTextNode(dataArr[0]);
+                        nameCell.appendChild(newName);
+
+                        var timeCellFrom = newRow.insertCell();
+                        var newTimeFrom = document.createTextNode(dataArr[1]);
+                        timeCellFrom.appendChild(newTimeFrom);
+
+                        var timeCellTo = newRow.insertCell();
+                        var newTimeTo = document.createTextNode(dataArr[2]);
+                        timeCellTo.appendChild(newTimeTo);
+
+                        var modeCell = newRow.insertCell();
+                        var newMode = document.createTextNode(modeTypeArr[dataArr[3]]);
+                        modeCell.appendChild(newMode);                    
+
+                        var actionCell = newRow.insertCell();
+                        var newAction1 = createElementFromHTML(rowedit);
+                        var newAction2 = createElementFromHTML(rowdel);
+                        var newAction3 = createElementFromHTML(rowspace);
+                        actionCell.appendChild(newAction1);
+                        actionCell.appendChild(newAction3);
+                        actionCell.appendChild(newAction2);
+
+                        var strData = dataArr.splice(3).join(";");
+                        newRow.setAttribute("data",strData);
+                    }
+                }
+            }
+        }
+
+        function val0_100(t) {
+            if (t.value < 30) t.value = 0;
+            if (t.value > 100) t.value = 100;
+        }
+
+        function val0_8(t) {
+            if (t.value < 0) t.value = 0;
+            if (t.value > 8) t.value = 8;
+        }
+
+        function val0_60(t) {
+            if (t.value < 0) t.value = 0;
+            if (t.value > 60) t.value = 60;
+        }
+
+        function val0_24(t) {
+            if (t.value < 0) t.value = 0;
+            if (t.value > 24) t.value = 24;
+        }
+
+        function clearResult() {
+            document.getElementById("result").innerText="";
+        }
+
+        var actColor = '#606c76';
+        var disColor = '#c8c8c8';
+
+        var rowedit = '<a href=# onClick="editRow(this)">Edit</a>';
+        var rowspace = '&nbsp;|&nbsp;';
+        var rowdel = '<a href=# onClick="delRow(this)">Del</a>';
+        var modeTypeArr = ["Pulse","Interval","Sequencial"];
+
+
+        document.getElementById("intTime").disabled = true;
+        document.getElementById("intTime").style.color = disColor;
+        document.getElementById("seq").disabled = true;
+        document.getElementById("seq").style.color = disColor;
+
+        //send to server
+        document.getElementById("submit").addEventListener("click", function(){
+            event.preventDefault();
+            //get all data from table row to array
+            var dataArr = [];
+            var jsonArr = [];
+            var tTbl = document.getElementById('nameAndTimeTable');
+            var tbodyRef = tTbl.getElementsByTagName('tbody')[0];
+            var l = tTbl.rows.length;
+            if (l > 30) {
+                alert('To many settings');
+                return;
+            }
+            for ( var i = 1; i < l; i++ ) {  //0 = header, preskocime
+                var dataStr = "";
+                var tr = tTbl.rows[i];
+                var name = tr.cells[0];
+                dataStr = tr.cells[0].innerText+";"+tr.cells[1].innerText+";"+tr.cells[2].innerText+";"+tr.getAttribute('data');
+                dataArr.push(dataStr);
+            }
+            jsonArr["d"] = dataArr;
+            jsonArr["f"] = document.getElementById('fooddelay').value;
+            jsonArr["ft"] = document.getElementById('food').value;
+            jsonArr["s"] = document.getElementById('storm').value;
+            jsonArr["r"] = document.getElementById('ramp').value;
+
+            var myJsonData = JSON.stringify(Object.assign({}, jsonArr));
+            //test if login required
+            var xhr = new XMLHttpRequest();
+            var url = "login";
+            var res = 'ERR'
+            var login = ""; 
+            var pwd = "";
+            xhr.open("GET", url, false);
+            xhr.send(null);
+            if (xhr.status === 200) {
+                    res = 'OK'
+            } else {
+                    res = 'ERR'
+            }
+
+            if (res == 'ERR') {
+                login = prompt("Login:");
+                if (login == null) return;
+                pwd = prompt("Password:");
+                if (pwd == null) return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            var url = "saveData";
+            xhr.open("POST", url, false);
+            if (res = 'ERR') 
+                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(unescape(encodeURIComponent(login + ':' + pwd))));
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    document.getElementById('result').innerText=json.status;
+                } else {
+                    document.getElementById('result').innerText="Error";
+                }
+                setTimeout(clearResult, 10000)
+            };
+            xhr.send(myJsonData);
+            
+        });
+
+        document.getElementById("pulseRandom").addEventListener("click", function(){
+            var pRandom = document.getElementById('pulseRandom');
+            if (pRandom.checked) {
+                document.getElementById('pulseSec').disabled = true;
+                document.getElementById('pulseSec').value = 0;
+            } else {
+                document.getElementById('pulseSec').disabled = false;
+            }
+        });
+
+        document.getElementById("modes").addEventListener("click", function(){
+            var radios = document.getElementsByName('modes');
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    mode = parseInt(radios[i].value);
+                    break;
+                }
+            }
+            switch(mode) {
+                case 0:
+                    document.getElementById("intTime").disabled = true;
+                    document.getElementById("seq").disabled = true;
+                    document.getElementById("intMinutes").value = 0;
+                    document.getElementById("intHour").value = 0;
+                    document.getElementById("seqsec").value = 0;
+                    document.getElementById("intTime").style.color = disColor;
+                    document.getElementById("seq").style.color = disColor;
+                    document.getElementById("pMax1").focus();
+                    break;
+                case 1:
+                    document.getElementById("intTime").disabled = false;
+                    document.getElementById("seqsec").value = 0;
+                    document.getElementById("seq").disabled = true;
+                    document.getElementById("intTime").style.color = actColor;
+                    document.getElementById("seq").style.color = disColor;
+                    document.getElementById("intMinutes").focus();
+                    break;
+                case 2:
+                    document.getElementById("intTime").disabled = true;
+                    document.getElementById("seq").disabled = false;
+                    document.getElementById("intHour").value = 0;
+                    document.getElementById("intMinutes").value = 0;
+                    document.getElementById("intTime").style.color = disColor;
+                    document.getElementById("seq").style.color = actColor;
+                    document.getElementById("seqsec").focus();
+                    break;
+            }
+        });
+        
+        document.getElementById("saveRow").addEventListener("click", function(){
+            event.preventDefault();
+            var roweditdel = rowedit + rowdel;
+            var timeWFrom = document.getElementById("timeWFrom").value.trim();
+            var timeWTo = document.getElementById("timeWTo").value.trim();
+            var timeW = timeWFrom+"-"+timeWTo;
+            var modeName = document.getElementById("modeName");
+            
+
+            var radios = document.getElementsByName('modes');
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    mode = radios[i].value;
+                    break;
+                }
+            }
+            var modeType = modeTypeArr[mode];
+            var nameW=modeName.value.trim();
+            if(!timeWFrom || !timeWTo || !nameW) {
+                alert("Values cannot be empty!");
+            } else {
+                var tTbl = document.getElementById('nameAndTimeTable');
+                var tbodyRef = tTbl.getElementsByTagName('tbody')[0];
+                //hledej name
+                var l = tTbl.rows.length;
+                var idx = 0;
+                for ( var i = 0; i < l; i++ ) {
+                    var tr = tTbl.rows[i];
+                    var cll = tr.cells[0];                                                              
+                    if(cll.innerText.indexOf(nameW) != -1) {
+                        idx = i;
+                        break;
+                    }
+                }
+                // edit, else add new row
+                if (idx != 0) {
+                    var tr = tTbl.rows[idx];
+                    tr.cells[0].innerText = nameW;
+                    tr.cells[1].innerText = timeWFrom;
+                    tr.cells[2].innerText = timeWTo;
+                    tr.cells[3].innerText = modeType;
+                    tr.setAttribute("data",dataToString());
+                } else {
+                    // Insert a row at the end of table
+                    var newRow = tbodyRef.insertRow();
+                    // Insert a cell at the end of the row
+                    var nameCell = newRow.insertCell();
+                    var newName = document.createTextNode(nameW);
+                    nameCell.appendChild(newName);
+
+                    var timeCellFrom = newRow.insertCell();
+                    var newTimeFrom = document.createTextNode(timeWFrom);
+                    timeCellFrom.appendChild(newTimeFrom);
+
+                    var timeCellTo = newRow.insertCell();
+                    var newTimeTo = document.createTextNode(timeWTo);
+                    timeCellTo.appendChild(newTimeTo);
+
+                    var modeCell = newRow.insertCell();
+                    var newMode = document.createTextNode(modeType);
+                    modeCell.appendChild(newMode);
+
+                    var actionCell = newRow.insertCell();
+                    var newAction1 = createElementFromHTML(rowedit);
+                    var newAction2 = createElementFromHTML(rowdel);
+                    var newAction3 = createElementFromHTML(rowspace);
+                    actionCell.appendChild(newAction1);
+                    actionCell.appendChild(newAction3);
+                    actionCell.appendChild(newAction2);
+
+                    nameCell.parentElement.setAttribute("data",dataToString());
+
+                    //clear value
+                    document.getElementById('modeName').value = '';
+                    document.getElementById('timeWFrom').value = timeWTo;
+                    document.getElementById('timeWTo').value = '';
+                }
+                sortTable();
+            }
+            document.getElementById("modeName").focus();
+        });
+
+        // Apply input rules as the user types or pastes input
+        document.getElementById('timeWFrom').onkeyup = function (e) {
+            var val = this.value;
+            var lastLength;
+            do {
+                // Loop over the input to apply rules repeately to pasted inputs
+                lastLength = val.length;
+                val = replaceBadInputs(val);
+            } while(val.length > 0 && lastLength !== val.length);
+            this.value = val;
+        };
+
+        // Check the final result when the input has lost focus
+        document.getElementById('timeWFrom').onblur = function (e)  {
+            var val = this.value;
+            val = (/^(([01][0-9]|2[0-3])h)|(([01][0-9]|2[0-3]):[0-5][0-9])$/.test(val) ? val : "");
+            this.value = val;
+        };
+
+        // Apply input rules as the user types or pastes input
+        document.getElementById('timeWTo').onkeyup = function (e) {
+            var val = this.value;
+            var lastLength;
+            do {
+                // Loop over the input to apply rules repeately to pasted inputs
+                lastLength = val.length;
+                val = replaceBadInputs24(val);
+            } while(val.length > 0 && lastLength !== val.length);
+            this.value = val;
+        };
+
+        // Check the final result when the input has lost focus
+        document.getElementById('timeWTo').onblur = function (e)  {
+            var fromVal = document.getElementById("timeWFrom").value;
+            var val = this.value;
+            val = (/^(([01][0-9]|2[0-4])h)|(([01][0-9]|2[0-4]):[0-5][0-9])$/.test(val) ? val : "");
+            this.value = val;
+        };
+
+        document.getElementById('pMax1').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMax2').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMax3').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMax4').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMin1').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMin2').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMin3').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pMin4').onblur = function (e)  {
+            val0_100(this);
+        };
+        document.getElementById('pulseSec').onblur = function (e)  {
+            val0_8(this);
+        };
+        document.getElementById('intMinutes').onblur = function (e)  {
+            val0_60(this);
+        };
+        document.getElementById('intHour').onblur = function (e)  {
+            val0_24(this);
+        };
+        document.getElementById('seqsec').onblur = function (e)  {
+            val0_60(this);
+        };
+
+        getDataFromServer();
+        sortTable();
+        get7096version();
+        //document.getElementById('modeName').focus();
+
+    </script>
+  </body>
+</html>
