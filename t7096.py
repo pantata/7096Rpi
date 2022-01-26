@@ -13,6 +13,9 @@ import http.client as httplib
 import urllib
 from functools import wraps
 
+''' Username & password '''
+username = b"lsl:reef"
+
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     #level=logging.INFO,
@@ -592,7 +595,6 @@ def getIP():
       return ip_interface(request.remote_addr)
 
 def check(authorization_header):
-    username = b"lsl:reef"
     incip = getIP()
     if incip.network.overlaps(enabledSite.network):
        return True
