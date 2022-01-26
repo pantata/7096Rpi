@@ -12,7 +12,7 @@ Warning: the EEPROM of the 7096 processor may be corrupted after about 10 years 
 	Raspberry Pi Zero W
 	OTG USB cable and USB A/A male coupler or diy OTG cable
 
-## SW HW Requirements:
+## SW Requirements:
 	Raspbian GNU/Linux 11 (bullseye)
 	python >= 3.9.2
 	Flask == 1.1.2
