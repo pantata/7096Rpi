@@ -19,8 +19,6 @@ Warning: the EEPROM of the 7096 processor may be corrupted after about 10 years 
 	pyserial == 3.5
 	waitress == 2.0.0
 
-License: The MIT License (MIT)
-
 Credits:
 - https://milligram.io 
 - https://github.com/johanymerson/7096 
